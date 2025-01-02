@@ -67,15 +67,7 @@ def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame) -> None:
     
     bq = bigquery.Client()
     bq_project = EnvVar('GCP_PROJECT').get_value()
-    
-    deployment_name = EnvVar("DAGSTER_DEPLOYMENT").get_value()
-    if deployment_name == 'dev':
-        bq_dataset = EnvVar("BIGQUERY_DEVELOPMENT_DATASET").get_value()
-    elif deployment_name == 'prod':
-        bq_dataset = EnvVar("BIGQUERY_PRODUCTION_DATASET").get_value()
-    else:
-        raise ValueError("Invalid deployment name.")
-    
+    bq_dataset = EnvVar("BIGQUERY_DATASET").get_value()
     bq_table_name = EnvVar("BIGQUERY_TABLE_NAME").get_value()
     bq_table = f"{bq_project}.{bq_dataset}.{bq_table_name}"
     

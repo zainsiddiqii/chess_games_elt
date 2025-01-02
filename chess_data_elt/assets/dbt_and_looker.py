@@ -1,4 +1,4 @@
-from dagster import AssetExecutionContext, asset
+from dagster import AssetExecutionContext, asset, EnvVar
 from dagster_dbt import dbt_assets, get_asset_key_for_model
 from ..resources import dbt_resource, bigquery_resource
 from .utils import bigquery_view_query
@@ -16,7 +16,11 @@ def chess_dbt_assets(context: AssetExecutionContext):
 def bigquery_view():
     """A view on BigQuery that will be fed into a Looker dashboard."""
     
+    bigquery_dataset = EnvVar("BIGQUERY_DATASET").get_value()
+    
     with bigquery_resource.get_client() as client:
-        query = client.query(bigquery_view_query)
+        query = client.query(
+            bigquery_view_query.format(bigquery_dataset)
+        )
         
     return query.result()
