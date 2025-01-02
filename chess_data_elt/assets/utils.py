@@ -213,7 +213,7 @@ BIGQUERY_TABLE_JOB_CONFIG = LoadJobConfig(
     ]
 )
 
-bigquery_view = """
+bigquery_view_query = """
 create or replace view {dataset}.view_monthly_summary as (
   select
     fct_game.game_sid,
