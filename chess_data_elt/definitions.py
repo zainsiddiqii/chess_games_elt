@@ -4,10 +4,10 @@ from .assets import google_cloud_storage, dbt
 
 gcs_assets = load_assets_from_modules(
     [google_cloud_storage],
-    group_name='Extract Load')
+    group_name="extract_load")
 dbt_assets = load_assets_from_modules(
     [dbt],
-    "Transform"
+    "transform"
 )
 
 defs = Definitions(
