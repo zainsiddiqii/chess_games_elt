@@ -6,14 +6,13 @@ from ..project import my_project
 
 @dbt_assets(
     manifest=my_project.manifest_path,
-    group_name="transform",
 )
 def chess_dbt_assets(context: AssetExecutionContext):
     yield from dbt_resource.cli(["build"], context=context).stream()
 
 @asset(
     deps=get_asset_key_for_model([chess_dbt_assets], "fct_game"),
-    group_name="dashboard",
+    group_name="looker_dashboard"
 )
 def bigquery_view():
     """A view on BigQuery that will be fed into a Looker dashboard."""
