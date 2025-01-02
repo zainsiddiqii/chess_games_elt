@@ -11,13 +11,13 @@ dbt_assets = load_assets_from_modules(
     [dbt],
     group_name="transform"
 )
-dashboard_assets = load_assets_from_modules(
-    [looker],
-    group_name="dashboard"
-)
+# dashboard_assets = load_assets_from_modules(
+#     [looker],
+#     group_name="dashboard"
+# )
 
 defs = Definitions(
-    assets=[*gc_assets, *dbt_assets, *dashboard_assets],
+    assets=[*gc_assets, *dbt_assets,],
     resources={
         "bigquery": bigquery_resource,
         "dbt": dbt_resource,
