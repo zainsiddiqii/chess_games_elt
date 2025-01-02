@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+chess_data_elt/__init__.py
+chess_data_elt/assets.py
+chess_data_elt/definitions.py
+chess_data_elt/resources.py
+chess_data_elt.egg-info/PKG-INFO
+chess_data_elt.egg-info/SOURCES.txt
+chess_data_elt.egg-info/dependency_links.txt
+chess_data_elt.egg-info/requires.txt
+chess_data_elt.egg-info/top_level.txt

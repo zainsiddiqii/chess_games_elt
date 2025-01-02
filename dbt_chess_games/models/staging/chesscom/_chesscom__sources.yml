@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: dagster
+    tables:
+      - name: bigquery_raw_games_chesscom
+        meta:
+          dagster:
+            asset_key: ["bigquery_raw_games_chesscom"]

@@ -1,0 +1,116 @@
+models:
+  - name: int_game_information
+    description: Intermediate model combining relevant game information from all chess games sources.
+    config:
+      materialized: view
+    columns:
+      - name: game_id
+        description: unique game id provided by the platform.
+        data_tests:
+          - unique
+          - not_null
+      - name: game_url
+        description: unique url for accessing the game details on the website of the relevant source
+      - name: start_timestamp_utc
+        description: start date and time of the game in the UTC format / timezone
+      - name: start_datetime_actual
+        description: start date and time of the game in local time where the game is played; location can be found in timezones
+      - name: end_timestamp_utc
+        description: end date and time of the game in the UTC format / timezone
+      - name: end_datetime_actual
+        description: end date and time of the game in local time where the game is played; location can be found in timezones
+      - name: is_rated
+        description: whether the game is rated or not, i.e. changes the elo of players involved or not
+      - name: time_class
+        description: time class of the game, like 'Rapid' or 'Blitz'
+        data_tests:
+          - accepted_values:
+              values:
+                - "ultrabullet"
+                - "bullet"
+                - "blitz"
+                - "rapid"
+                - "classical"
+      - name: time_control
+        description: exact type of time class, e.g. 3+2 (usually in format minutes:increment_seconds)
+      - name: minutes
+        description: the number of minutes in the time control
+      - name: seconds
+        description: the number of seconds in the time control (minutes * 60)
+      - name: is_increment
+        description: whether the time control has increment or not
+      - name: increment_amount
+        description: if the time control has increment, how many seconds is it per move
+      - name: opening_code
+        description: the opening code of the opening as provided by the encyclopaedia of chess openings
+      - name: opening_name
+        description: the name of the opening as provided by the encyclopaedia of chess openings
+      - name: colour
+        description: colour of my pieces during the game
+        data_tests:
+          - accepted_values:
+              values:
+                - "white"
+                - "black"
+      - name: my_rating
+        description: my elo rating on the source / platform at the start of the game
+      - name: opponent_rating
+        description: my opponent's elo rating on the source / platform at the start of the game
+      - name: opponent_id
+        description: unique id of opponent as provided by source / platform
+      - name: opponent_username
+        description: username of opponent on source / platform
+      - name: opponent_country
+        description: represented country of opponent
+      - name: opponent_is_verified
+        description: whether the opponent has a verified account on the platform
+      - name: opponent_status
+        description: status of the opponent on the platform
+      - name: my_accuracy
+        description: my accuracy during the game as measured by engine on platform / source
+      - name: opponent_accuracy
+        description: opponent's accuracy during the game as measured by engine on platform / source
+      - name: move_number_reached
+        description: how many moves were played during the game, 5 could mean 5 moves by white and 4 or 5 moves by black
+      - name: total_moves
+        description: count of total moves played, if move_number_reached is 40, total_moves could be 79 or 80
+      - name: my_result
+        description: whether the game was a win, loss, or draw for me
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">100"
+          - accepted_values:
+              values:
+                - "win"
+                - "loss"
+                - "draw"
+      - name: opponent_result
+        description: whether the game was a win, loss, or draw for my opponent
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">100"
+          - accepted_values:
+              values:
+                - "win"
+                - "loss"
+                - "draw"
+      - name: result_method
+        description: the method by which the result occurs, e.g. win by resignation
+        data_tests:
+          - accepted_values:
+              values:
+                - "stalemate"
+                - "checkmate"
+                - "resignation"
+                - "abandonment"
+                - "timeout"
+                - "repetition"
+                - "insufficient material"
+                - "time vs insufficient material"
+                - "agreement"
+      - name: source
+        description: what platform the game was played on, e.g. chesscom , lichess

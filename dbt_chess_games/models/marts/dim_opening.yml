@@ -1,0 +1,28 @@
+models:
+  - name: dim_opening
+    description: dimension table containing unique openings as listed on the chess openings encyclopaedia
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: opening_sid
+        data_type: string
+        description: unique surrogate key to identify each opening and its variation (if applicable)
+        constraints:
+          - type: primary_key
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: opening_name
+        data_type: string
+        description: the name of the base opening, e.g. Sicilian Defense, Italian Game etc
+      - name: opening_variation
+        data_type: string
+        description: used in conjuction with opening_name, i.e. different variations for the same opening
+      - name: white_first_move
+        data_type: string
+        description: white's first move for the opening
+      - name: black_first_move
+        data_type: string
+        description: black's first move for the opening

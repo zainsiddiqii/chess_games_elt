@@ -1,0 +1,34 @@
+[sqlfluff]
+
+[sqlfluff:indentation]
+indented_on_contents = False
+tab_space_size = 2
+
+[sqlfluff:layout:type:alias_expression]
+spacing_before = align
+align_within = select_clause
+align_scope = file
+
+[sqlfluff:rules:capitalisation.keywords] # select, from, where, etc.
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions] # sum, avg, etc.
+# Function names
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.literals] # true, false, null
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.types] # int, varchar, etc.
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.expression] # must alias columns in expressions, so '''sum(column) as total''' for example
+allow_scalar = False
+
+[sqlfluff:rules:aliasing.length]
+# Avoid using small table aliases like customers AS [c, c1, cst, cstmr...]
+min_alias_length = 4
+
+[sqlfluff:rules:ambiguous.column_references]
+# follow style guide (use numbers where you can)
+group_by_and_order_by_style = consistent

@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: stg_chesscom__games
+    config:
+      materialized: view
+    columns:
+      - name: colour
+        data_tests:
+          - accepted_values:
+              values:
+                - "white"
+                - "black"
+
+  - name: stg_chesscom__move_times
+    config:
+      materialized: view
+
+  - name: stg_chesscom__results
+    config:
+      materialized: view
+
+  - name: stg_chesscom__openings
+    config:
+      materialized: view
+
+  - name: stg_chesscom__start_end_timestamps
+    config:
+      materialized: view
+
+  - name: stg_chesscom__time_class_control
+    config:
+      materialized: view
+    columns:
+      - name: time_class
+        data_tests:
+          - accepted_values:
+              values:
+                - "bullet"
+                - "blitz"
+                - "rapid"

@@ -1,0 +1,79 @@
+models:
+  - name: dim_game
+    description: dimension table containing information about a game such as the source, colour, the date and time of start etc
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: game_sid
+        data_type: string
+        description: unique surrogate key to identify each game
+        constraints:
+          - type: primary_key
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: game_id
+        data_type: string
+        description: unique key to identify each game provided by the source (chesscom or lichess etc)
+      - name: game_url
+        data_type: string
+        description: url for easy access to game on the platform (or source)
+      - name: source
+        data_type: string
+        description: source the game comes from (i.e. the platform the game was played on)
+      - name: is_rated
+        data_type: boolean
+        description: boolean to indicate whether the game was rated or not
+      - name: start_date_utc
+        data_type: date
+        description: start date of the game in UTC time zone
+        constraints:
+          - type: foreign_key
+        data_tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: start_date_actual
+        data_type: date
+        description: start date of the game in the location it was played in (location information in timezones)
+        constraints:
+          - type: foreign_key
+        data_tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: start_time_utc
+        data_type: time
+        description: start time of the game in UTC time zone
+      - name: start_time_actual
+        data_type: time
+        description: start time of the game in the location it was played in (location information in timezones)
+      - name: end_date_utc
+        data_type: date
+        description: end date of the game in UTC time zone
+        constraints:
+          - type: foreign_key
+        data_tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: end_date_actual
+        data_type: date
+        description: end date of the game in the location it was played in (location information in timezones)
+        constraints:
+          - type: foreign_key
+        data_tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: end_time_utc
+        data_type: time
+        description: end time of the game in UTC time zone
+      - name: end_time_actual
+        data_type: time
+        description: end time of the game in the location it was played in (location information in timezones)
+      - name: colour
+        data_type: string
+        description: colour of my pieces for the game
