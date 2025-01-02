@@ -214,7 +214,7 @@ BIGQUERY_TABLE_JOB_CONFIG = LoadJobConfig(
 )
 
 bigquery_view_query = """
-create or replace view {dataset}.view_monthly_summary as (
+create or replace view prod.view_monthly_summary as (
   select
     fct_game.game_sid,
     dim_game.colour,
@@ -243,24 +243,24 @@ create or replace view {dataset}.view_monthly_summary as (
     fct_game.my_accuracy,
     fct_game.opponent_accuracy
 
-  from `{dataset}.fct_game` as fct_game
+  from `prod.fct_game` as fct_game
 
-  left join `{dataset}.dim_game` as dim_game
+  left join `prod.dim_game` as dim_game
     on dim_game.game_sid = fct_game.game_sid
 
-  left join `{dataset}.dim_opening` as dim_opening
+  left join `prod.dim_opening` as dim_opening
     on dim_opening.opening_sid = fct_game.opening_sid
 
-  left join `{dataset}.dim_opponent` as dim_opponent
+  left join `prod.dim_opponent` as dim_opponent
     on dim_opponent.opponent_sid = fct_game.opponent_sid
 
-  left join `{dataset}.dim_result` as dim_result
+  left join `prod.dim_result` as dim_result
     on dim_result.result_sid = fct_game.result_sid
 
-  left join `{dataset}.dim_time_control` as dim_time
+  left join `prod.dim_time_control` as dim_time
     on dim_time.time_control_sid = fct_game.time_control_sid
 
-  left join `{dataset}.dim_date` as dim_date
+  left join `prod.dim_date` as dim_date
     on dim_date.date_id between dim_game.start_date_actual and dim_game.end_date_actual
 
   where
