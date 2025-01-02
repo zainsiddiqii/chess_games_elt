@@ -1,11 +1,11 @@
 from dagster import asset, EnvVar, AssetExecutionContext, BackfillPolicy
 import polars as pl
 import gcsfs
+import io
 from google.cloud import bigquery
 from . import constants
-from .utils import get_monthly_archive, extract_game_data, BIGQUERY_TABLE_JOB_CONFIG
+from .utils import get_monthly_archive, extract_game_data, bigquery_view, BIGQUERY_TABLE_JOB_CONFIG
 from ..partitions import monthly_partition
-import io
 
 @asset(
     partitions_def=monthly_partition,

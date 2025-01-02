@@ -8,8 +8,4 @@ bigquery_resource = BigQueryResource(
     gcp_credentials=EnvVar("GCP_CREDS"),
 )
 
-gcs_resource = GCSResource(
-    project=EnvVar("GCP_PROJECT"),
-)
-
 dbt_resource = DbtCliResource(project_dir=my_project)
