@@ -4,10 +4,11 @@ from .assets import dbt_and_looker, google_cloud_storage
 
 gc_assets = load_assets_from_modules(
     [google_cloud_storage],
-    group_name="extract_load"
+    group_name="extracting_loading"
 )
 dbt_and_looker_assets = load_assets_from_modules(
     [dbt_and_looker],
+    group_name="transformation_serving"
 )
 
 
