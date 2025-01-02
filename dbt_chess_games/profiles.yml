@@ -20,4 +20,4 @@ bigquery_chess:
       job_retries: 1
       priority: interactive
       threads: 4
-  target: dev
+  target: prod
