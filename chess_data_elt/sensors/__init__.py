@@ -1,24 +1,28 @@
-from dagster import sensor, AssetKey, RunRequest
 from ..jobs import monthly_transform_serve_job
+from dagster import (
+    AssetKey,
+    EventLogEntry,
+    RunConfig,
+    SensorEvaluationContext,
+    RunRequest,
+    asset_sensor,
+)
 
 # AssetKey for the asset to monitor
-BIGQUERY_RAW_ASSET = AssetKey("bigquery_raw_games_chesscom")
+BIGQUERY_RAW_TABLE_ASSET = AssetKey("bigquery_raw_games_chesscom")
 
-@sensor(job=monthly_transform_serve_job)  # Reference the job to trigger
-def transformation_sensor(context):
-    # Check if the specific asset was materialized
-    events = context.instance.get_asset_materialization_events(BIGQUERY_RAW_ASSET)
-
-    # If no materialization events, do nothing
-    if not events:
-        return
-
-    # Get the most recent materialization
-    latest_event = events[0]
-
-    # Check if this materialization is new
-    if not context.instance.has_seen_event(latest_event.event_log_entry_id):
-        context.instance.mark_event_as_seen(latest_event.event_log_entry_id)
-
-        # Trigger the job with a RunRequest
-        return RunRequest(run_key=str(latest_event.event_log_entry_id))
+@asset_sensor(asset_key=BIGQUERY_RAW_TABLE_ASSET, job=monthly_transform_serve_job)
+def my_asset_sensor(context: SensorEvaluationContext, asset_event: EventLogEntry):
+    assert asset_event.dagster_event and asset_event.dagster_event.asset_key
+    yield RunRequest(
+        run_key=context.cursor,
+        run_config={
+            "ops": {
+                "read_materialization": {
+                    "config": {
+                        "asset_key": asset_event.dagster_event.asset_key.path,
+                    }
+                }
+            }
+        },
+    )
