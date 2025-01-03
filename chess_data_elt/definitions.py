@@ -19,7 +19,7 @@ looker_assets = load_assets_from_modules(
 )
 
 defs = Definitions(
-    assets=[*gc_assets, *dbt_and_looker_assets,*looker_assets],
+    assets=[*gc_assets, *dbt_and_looker_assets],
     resources={
         "bigquery": bigquery_resource,
         "dbt": dbt_resource,
