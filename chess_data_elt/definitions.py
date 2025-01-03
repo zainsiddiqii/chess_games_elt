@@ -3,7 +3,7 @@ from .resources import bigquery_resource, dbt_resource
 from .assets import dbt_and_looker, google_cloud_storage
 from .jobs import monthly_el_update_job, monthly_transform_serve_job
 from .schedules import monthly_update_schedule
-from .sensors import transformation_sensor
+from .sensors import bigquery_raw_table_sensor
 
 gc_assets = load_assets_from_modules(
     [google_cloud_storage],
@@ -22,5 +22,5 @@ defs = Definitions(
     },
     jobs=[monthly_el_update_job, monthly_transform_serve_job],
     schedules=[monthly_update_schedule],
-    sensors=[transformation_sensor],
+    sensors=[bigquery_raw_table_sensor],
 )

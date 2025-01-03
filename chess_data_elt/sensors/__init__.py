@@ -12,7 +12,7 @@ from dagster import (
 BIGQUERY_RAW_TABLE_ASSET = AssetKey("bigquery_raw_games_chesscom")
 
 @asset_sensor(asset_key=BIGQUERY_RAW_TABLE_ASSET, job=monthly_transform_serve_job)
-def my_asset_sensor(context: SensorEvaluationContext, asset_event: EventLogEntry):
+def bigquery_raw_table_sensor(context: SensorEvaluationContext, asset_event: EventLogEntry):
     assert asset_event.dagster_event and asset_event.dagster_event.asset_key
     yield RunRequest(
         run_key=context.cursor,
