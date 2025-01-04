@@ -1,0 +1,46 @@
+models:
+  - name: dim_date
+    description: dimension table for dates and information relating to a date, such as day of month or year etc
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: date_id
+        data_type: date
+        description: unique key to identify each date
+        constraints:
+          - type: primary_key
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: year
+        data_type: integer
+        description: year of date
+      - name: quarter
+        data_type: integer
+        description: the fiscal quarter of the year (1-4)
+      - name: year_week
+        data_type: integer
+        description: week of the year (1-53)
+      - name: month
+        data_type: integer
+        description: the month of the year (1-12)
+      - name: month_name
+        data_type: string
+        description: the month of the year by full name (January, July etc)
+      - name: year_day
+        data_type: integer
+        description: the day of the year (1-366)
+      - name: month_day
+        data_type: integer
+        description: day of the month (1-31)
+      - name: week_day
+        data_type: integer
+        description: the day of the week (1-7)
+      - name: day_name
+        data_type: string
+        description: the day of the week by full name (Monday, Wednesday etc)
+      - name: day_is_weekend
+        data_type: boolean
+        description: boolean to indicate whether the day is a weekday (True for weekday)

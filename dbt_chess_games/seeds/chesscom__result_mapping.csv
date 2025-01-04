@@ -1,0 +1,29 @@
+colour,white_result,black_result,my_result,opponent_result,result_method
+black,abandoned,win,win,loss,abandonment
+black,agreed,agreed,draw,draw,agreement
+black,checkmated,win,win,loss,checkmate
+black,insufficient,insufficient,draw,draw,insufficient material
+black,repetition,repetition,draw,draw,repetition
+black,resigned,win,win,loss,resignation
+black,stalemate,stalemate,draw,draw,stalemate
+black,timeout,win,win,loss,timeout
+black,timevsinsufficient,timevsinsufficient,draw,draw,time vs insufficient material
+black,win,timeout,loss,win,timeout
+black,win,checkmated,loss,win,checkmate
+black,win,resigned,loss,win,resignation
+black,win,abandoned,loss,win,abandonment
+black,50move,50move,draw,draw,50 move rule
+white,abandoned,win,loss,win,abandonment
+white,agreed,agreed,draw,draw,agreement
+white,checkmated,win,loss,win,checkmate
+white,insufficient,insufficient,draw,draw,insufficient material
+white,repetition,repetition,draw,draw,repetition
+white,resigned,win,loss,win,resignation
+white,stalemate,stalemate,draw,draw,stalemate
+white,timeout,win,loss,win,timeout
+white,timevsinsufficient,timevsinsufficient,draw,draw,time vs insufficient material
+white,win,timeout,win,loss,timeout
+white,win,checkmated,win,loss,checkmate
+white,win,resigned,win,loss,resignation
+white,win,abandoned,win,loss,abandonment
+white,50move,50move,draw,draw,50 move rule

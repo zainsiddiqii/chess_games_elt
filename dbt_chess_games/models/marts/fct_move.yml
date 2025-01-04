@@ -1,0 +1,78 @@
+models:
+  - name: fct_move
+    description: fact table containing statistics about each move played in a game such as the piece moved, the time taken, or the type of move
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: move_sid
+        data_type: string
+        description: unique surrogate key to identify each move
+        constraints:
+          - type: primary_key
+        data_tests:
+          - unique
+          - not_null
+      - name: game_sid
+        data_type: string
+        description: (ref to dim_game.game_sid)
+        constraints:
+          - type: foreign_key
+        data_tests:
+          - not_null
+          - relationships:
+              field: game_sid
+              to: ref('dim_game')
+      - name: move_number
+        data_type: integer
+        description: the move number the move was made on, 2 -> for move 3 and 4 of the game for e.g
+      - name: move_number_raw
+        data_type: integer
+        description: the raw move number without reference to colours, so move_number = 4 ==> move 7 and 8 move_number_raw
+      - name: move
+        data_type: string
+        description: the move made, in chess notation, e.g. e4, Nxf5, Rexd4, O-O
+      - name: is_my_move
+        data_type: boolean
+        description: boolean to indicate whether the move is made by me
+      - name: move_colour
+        data_type: string
+        description: the colour of the pieces that made the move ("white" or "black")
+        data_tests:
+          - accepted_values:
+              values:
+                - "white"
+                - "black"
+      - name: move_piece
+        data_type: string
+        description: the piece used to make the move, e.g. king, queen
+        data_tests:
+          - accepted_values:
+              values:
+                - "king"
+                - "queen"
+                - "rook"
+                - "bishop"
+                - "knight"
+                - "pawn"
+                - "multiple"
+      - name: move_type
+        data_type: string
+        description: the type of move made, e.g. capture, checkmate
+        data_tests:
+          - accepted_values:
+              values:
+                - "move"
+                - "capture"
+                - "check"
+                - "checkmate"
+                - "castles"
+      - name: move_ts
+        data_type: time
+        description: the timestamp in-game for the move, e.g. 00:09:59, 00:01:03 (also the time remaining when the move is made)
+      - name: time_taken
+        data_type: integer
+        description: the time taken for the move in seconds
+      - name: increment_amount
+        data_type: integer
+        description: whether increment was enabled for the game, if > 0, move_ts can increase for players between moves if time_taken < increment_amount

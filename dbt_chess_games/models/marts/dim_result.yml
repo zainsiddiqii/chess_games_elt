@@ -1,0 +1,22 @@
+models:
+  - name: dim_result
+    description: dimension table containing information about the result of the game from my perspective
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: result_sid
+        data_type: string
+        description: unique surrogate key to identify each result possible
+        constraints:
+          - type: primary_key
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: result
+        data_type: string
+        description: whether the result is a "win", "loss", or "draw"
+      - name: result_method
+        data_type: string
+        description: how each result materialises, e.g. 'checkmate', 'resignation', 'agreement'

@@ -1,0 +1,15 @@
+letter,piece
+a,pawn
+b,pawn
+c,pawn
+d,pawn
+e,pawn
+f,pawn
+g,pawn
+h,pawn
+K,king
+Q,queen
+R,rook
+B,bishop
+N,knight
+O,multiple
