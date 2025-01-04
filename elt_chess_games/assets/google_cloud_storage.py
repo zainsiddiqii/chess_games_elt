@@ -1,5 +1,5 @@
 from dagster import asset, EnvVar, AssetExecutionContext, BackfillPolicy
-from dagster_gcp import BigQueryResource
+from dagster_gcp import BigQueryResource, GCSResource
 import polars as pl
 import gcsfs
 import io
@@ -43,7 +43,7 @@ def games_dataframe(context: AssetExecutionContext) -> pl.DataFrame:
     backfill_policy=BackfillPolicy.multi_run(max_partitions_per_run=1),
     group_name="extract_load"
 )
-def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame) -> None:
+def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcs: GCSResource) -> None:
     """The formatted ndjson file containing chess games data for a month."""
     
     partition_date_str = context.partition_key
@@ -53,12 +53,20 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame) -> N
     gcs_file_path = constants.GCS_FILE_PATH_TEMPLATE.format(year, month)
     full_file_path = f"gs://{bucket_name}/{gcs_file_path}"
     
-    fs = gcsfs.GCSFileSystem()
+    client = gcs.get_client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(gcs_file_path)
+    print(blob.name)
     
-    with fs.open(full_file_path, 'wb') as file:
-        games_dataframe.write_ndjson(file)
+    with io.BytesIO() as stream:
+        games_dataframe.write_ndjson(stream)
+        stream.seek(0)
+        blob.upload_from_file(stream)
         
-    print(f"Uploaded {gcs_file_path} to GCS bucket {bucket_name}.")    
+    print(f"Uploaded {gcs_file_path} to GCS bucket {bucket_name}.")
+    
+    for blob in client.list_blobs(bucket_name):
+        print(blob.name) 
     
 @asset(
     partitions_def=monthly_partition,
@@ -82,10 +90,5 @@ def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame, bigquery: BigQuer
                 bq_table,
                 job_config=BIGQUERY_TABLE_JOB_CONFIG,
             )
-        # job = bq.load_table_from_file(
-        #     stream,
-        #     destination=bq_table,
-        #     project=bq_project,
-        #     job_config=BIGQUERY_TABLE_JOB_CONFIG,
-        # )
+
     job.result()  # Waits for the job to complete
