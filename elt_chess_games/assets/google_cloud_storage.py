@@ -1,7 +1,7 @@
 from dagster import asset, EnvVar, AssetExecutionContext, BackfillPolicy
 from dagster_gcp import BigQueryResource, GCSResource
 import polars as pl
-import gcsfs
+from ..resources import GCPAuthResource
 import io
 from . import constants
 from .utils import get_monthly_archive, extract_game_data, BIGQUERY_TABLE_JOB_CONFIG
@@ -43,7 +43,7 @@ def games_dataframe(context: AssetExecutionContext) -> pl.DataFrame:
     backfill_policy=BackfillPolicy.multi_run(max_partitions_per_run=1),
     group_name="extract_load"
 )
-def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcs: GCSResource) -> None:
+def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcp_auth: GCPAuthResource) -> None:
     """The formatted ndjson file containing chess games data for a month."""
     
     partition_date_str = context.partition_key
@@ -53,7 +53,7 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcs:
     gcs_file_path = constants.GCS_FILE_PATH_TEMPLATE.format(year, month)
     full_file_path = f"gs://{bucket_name}/{gcs_file_path}"
     
-    client = gcs.get_client()
+    client = gcp_auth.get_client()
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(gcs_file_path)
     print(blob.name)
