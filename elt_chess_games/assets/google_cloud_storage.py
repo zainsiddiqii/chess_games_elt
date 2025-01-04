@@ -6,6 +6,7 @@ from google.cloud import bigquery
 from . import constants
 from .utils import get_monthly_archive, extract_game_data, BIGQUERY_TABLE_JOB_CONFIG
 from ..partitions import monthly_partition
+from ..resources import bigquery_resource
 
 @asset(
     partitions_def=monthly_partition,
@@ -77,10 +78,16 @@ def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame) -> None:
     with io.BytesIO() as stream:
         games_dataframe.write_ndjson(stream)
         stream.seek(0)
-        job = bq.load_table_from_file(
-            stream,
-            destination=bq_table,
-            project=bq_project,
-            job_config=BIGQUERY_TABLE_JOB_CONFIG,
-        )
+        with bigquery_resource.get_client() as client:
+            job = client.load_table_from_file(
+                stream,
+                bq_table,
+                job_config=BIGQUERY_TABLE_JOB_CONFIG,
+            )
+        # job = bq.load_table_from_file(
+        #     stream,
+        #     destination=bq_table,
+        #     project=bq_project,
+        #     job_config=BIGQUERY_TABLE_JOB_CONFIG,
+        # )
     job.result()  # Waits for the job to complete
