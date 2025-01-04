@@ -6,7 +6,7 @@ from google.cloud import bigquery
 from . import constants
 from .utils import get_monthly_archive, extract_game_data, BIGQUERY_TABLE_JOB_CONFIG
 from ..partitions import monthly_partition
-from ..resources import bigquery_resource
+from dagster_gcp import BigQueryResource
 
 @asset(
     partitions_def=monthly_partition,
@@ -66,7 +66,7 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame) -> N
     backfill_policy=BackfillPolicy.multi_run(max_partitions_per_run=1),
     group_name="extract_load"
 )
-def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame) -> None:
+def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame, bigquery: BigQueryResource) -> None:
     """Table on BigQuery containing raw data about chess games."""
     
     bq = bigquery.Client()
@@ -78,7 +78,7 @@ def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame) -> None:
     with io.BytesIO() as stream:
         games_dataframe.write_ndjson(stream)
         stream.seek(0)
-        with bigquery_resource.get_client() as client:
+        with bigquery.get_client() as client:
             job = client.load_table_from_file(
                 stream,
                 bq_table,
