@@ -1,4 +1,4 @@
-from dagster import Definitions, load_assets_from_package_module
+from dagster import Definitions
 from .resources import bigquery_resource, dbt_resource
 from .assets.dbt import chess_dbt_assets
 from .assets.google_cloud_storage import games_dataframe, gcs_file, bigquery_raw_games_chesscom
