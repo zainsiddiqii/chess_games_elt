@@ -1,5 +1,5 @@
 from dagster import Definitions
-from .resources import bigquery_resource, dbt_resource
+from .resources import bigquery_resource, dbt_resource, gcs_resource
 from .assets.dbt import chess_dbt_assets
 from .assets.google_cloud_storage import games_dataframe, gcs_file, bigquery_raw_games_chesscom
 from .assets.looker import bigquery_dashboard_view
@@ -12,6 +12,7 @@ defs = Definitions(
     resources={
         "bigquery": bigquery_resource,
         "dbt": dbt_resource,
+        "gcs": gcs_resource,
     },
     jobs=[monthly_el_update_job, monthly_transform_serve_job],
     schedules=[monthly_update_schedule],
