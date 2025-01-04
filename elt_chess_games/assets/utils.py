@@ -2,7 +2,6 @@ import polars as pl
 import requests
 from polars.exceptions import SchemaError
 from datetime import datetime
-import time
 
 from google.cloud.bigquery import (
     LoadJobConfig,
@@ -29,7 +28,6 @@ def get_monthly_archive(year: str, month: str, username: str) -> dict:
     base_url = f"https://api.chess.com/pub/player/{username}/games/"
     url = f"{base_url}{year}/{month}"
     response = requests.get(url, headers=headers)
-    time.sleep(5)
     response_json = response.json()
     
     return response_json
