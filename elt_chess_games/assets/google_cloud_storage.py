@@ -1,12 +1,11 @@
 from dagster import asset, EnvVar, AssetExecutionContext, BackfillPolicy
+from dagster_gcp import BigQueryResource
 import polars as pl
 import gcsfs
 import io
-from google.cloud import bigquery
 from . import constants
 from .utils import get_monthly_archive, extract_game_data, BIGQUERY_TABLE_JOB_CONFIG
 from ..partitions import monthly_partition
-from dagster_gcp import BigQueryResource
 
 @asset(
     partitions_def=monthly_partition,
@@ -69,7 +68,6 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame) -> N
 def bigquery_raw_games_chesscom(games_dataframe: pl.DataFrame, bigquery: BigQueryResource) -> None:
     """Table on BigQuery containing raw data about chess games."""
     
-    bq = bigquery.Client()
     bq_project = EnvVar('GCP_PROJECT').get_value()
     bq_dataset = EnvVar("BIGQUERY_DATASET").get_value()
     bq_table_name = EnvVar("BIGQUERY_TABLE_NAME").get_value()
