@@ -28,7 +28,15 @@ def get_monthly_archive(year: str, month: str, username: str) -> dict:
     base_url = f"https://api.chess.com/pub/player/{username}/games/"
     url = f"{base_url}{year}/{month}"
     response = requests.get(url, headers=headers)
-    response_json = response.json()
+    
+    # Check if the request was successful
+    if response.status_code != 200:
+        raise ValueError(f"Failed to fetch data from Chess.com API. Status code: {response.status_code}, URL: {url}")
+
+    try:
+        response_json = response.json()
+    except requests.exceptions.JSONDecodeError:
+        raise ValueError(f"Invalid JSON response from Chess.com API. URL: {url}, Response: {response.text}")
     
     return response_json
 
