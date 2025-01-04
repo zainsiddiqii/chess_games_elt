@@ -30,9 +30,10 @@ def get_monthly_archive(year: int, month: int, username: str) -> dict:
     
     base_url = f"https://api.chess.com/pub/player/{username}/games/"
     url = f"{base_url}{year}/{month}"
-    response = requests.get(url, headers=headers).json()
+    response = requests.get(url, headers=headers)
+    response_json = response.json()
     
-    return response
+    return response_json
 
 def extract_game_data(game: dict) -> pl.DataFrame:
     
