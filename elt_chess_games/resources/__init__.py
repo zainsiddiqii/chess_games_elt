@@ -16,29 +16,29 @@ dbt_resource = DbtCliResource(project_dir=chess_games_project)
 
 import os
 import base64
-from contextlib import contextmanager
-from typing import Optional, Iterator
 from google.cloud import storage
-from dagster import ConfigurableResource
 from pydantic import Field
+from typing import Optional
+from dagster import ConfigurableResource
+
 
 class GCPAuthResource(ConfigurableResource):
     """
-    A Dagster resource for authenticated interactions with GCP services, such as GCS,
-    using credentials provided during instantiation.
+    A Dagster resource that wraps around the google.cloud.storage.Client class,
+    adding support for credential management during instantiation.
 
     Example:
         .. code-block:: python
 
             @asset
-            def my_asset(gcp_auth: GCPAuthResource):
-                with gcp_auth.get_gcs_client() as client:
-                    bucket = client.bucket("my-bucket")
-                    blob = bucket.blob("my-object")
-                    blob.upload_from_string("Hello, World!")
+            def upload_to_gcs(gcp_auth: GCPAuthResource):
+                client = gcp_auth.get_client()
+                bucket = client.bucket("my-bucket")
+                blob = bucket.blob("example.txt")
+                blob.upload_from_string("Hello, World!")
     """
 
-    project: Optional[str] = Field(
+    project: str = Field(
         default=None,
         description="Project ID for the GCP project. If not provided, inferred from credentials.",
     )
@@ -51,44 +51,45 @@ class GCPAuthResource(ConfigurableResource):
         ),
     )
 
-    @contextmanager
-    def _setup_credentials(self):
-        """Temporarily sets up GCP credentials for the resource."""
-        if self.gcp_credentials:
-            # Decode the base64-encoded credentials
-            creds_json = base64.b64decode(self.gcp_credentials).decode("utf-8")
-            temp_credentials_path = "/tmp/gcp_creds.json"
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._client = None
 
-            # Write credentials to a temporary file
-            with open(temp_credentials_path, "w") as f:
+    def _setup_credentials(self):
+        """
+        Sets up GCP credentials by decoding the base64-encoded credentials and creating
+        a temporary file to be used by GOOGLE_APPLICATION_CREDENTIALS.
+        """
+        if self.gcp_credentials:
+            # Decode the credentials
+            creds_json = base64.b64decode(self.gcp_credentials).decode("utf-8")
+            self._temp_credentials_path = "/tmp/gcp_creds.json"
+
+            # Write to a temporary file
+            with open(self._temp_credentials_path, "w") as f:
                 f.write(creds_json)
 
             # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_credentials_path
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = self._temp_credentials_path
 
+    def _cleanup_credentials(self):
+        """Cleans up the temporary credentials file and unsets the environment variable."""
+        if hasattr(self, "_temp_credentials_path") and os.path.exists(self._temp_credentials_path):
+            os.remove(self._temp_credentials_path)
+            del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+
+    def get_client(self) -> storage.Client:
+        """
+        Returns a google.cloud.storage.Client instance. Sets up credentials if provided.
+        """
+        if self._client is None:
             try:
-                yield  # Yield control back to the caller
+                self._setup_credentials()
+                self._client = storage.Client(project=self.project)
             finally:
-                # Cleanup: Remove the temporary file and unset the environment variable
-                os.remove(temp_credentials_path)
-                del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-        else:
-            yield  # Proceed without modifying credentials if none are provided
+                self._cleanup_credentials()
+        return self._client
 
-    @contextmanager
-    def get_gcs_client(self) -> Iterator[storage.Client]:
-        """
-        Returns an authenticated GCS client (google.cloud.storage.Client) using the provided credentials.
-
-        Example:
-            .. code-block:: python
-
-                with gcp_auth.get_gcs_client() as client:
-                    bucket = client.bucket("my-bucket")
-                    ...
-        """
-        with self._setup_credentials():
-            yield storage.Client(project=self.project)
 
 gcp_auth_resource = GCPAuthResource(
     project=EnvVar("GCP_PROJECT"),
