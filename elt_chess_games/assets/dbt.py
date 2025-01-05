@@ -13,8 +13,6 @@ class CustomizedDagsterDbtTranslator(DagsterDbtTranslator):
         else:
             return super().get_asset_key(dbt_resource_props)
 
-
-
 @dbt_assets(
     manifest=chess_games_project.manifest_path,
     dagster_dbt_translator=CustomizedDagsterDbtTranslator,
