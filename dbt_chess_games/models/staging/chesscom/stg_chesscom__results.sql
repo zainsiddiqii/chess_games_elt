@@ -7,7 +7,7 @@ results as (
     result_mapping.opponent_result,
     result_mapping.result_method
 
-  from {{ source("chesscom", "raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }} as games
 
   left join
     {{ ref("chesscom__result_mapping") }} as result_mapping
