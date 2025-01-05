@@ -55,7 +55,6 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcs:
     client = gcs.get_client()
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(gcs_file_path)
-    print(blob.name)
     
     with io.BytesIO() as stream:
         games_dataframe.write_ndjson(stream)
@@ -63,9 +62,6 @@ def gcs_file(context: AssetExecutionContext, games_dataframe: pl.DataFrame, gcs:
         blob.upload_from_file(stream)
         
     print(f"Uploaded {gcs_file_path} to GCS bucket {bucket_name}.")
-    
-    for blob in client.list_blobs(bucket_name):
-        print(blob.name) 
     
 @asset(
     partitions_def=monthly_partition,
