@@ -1,9 +1,9 @@
 bigquery_chess:
   outputs:
-    dev:
+    test:
       type: bigquery
       method: service-account
-      keyfile: C:\Users\ZainSiddiqi\Downloads\chessgames-7ea1be9e813b.json
+      keyfile: "{{ env_var('GCP_SERVICE_ACCOUNT_KEYFILE') }}"
       project: chessgames
       dataset: test
       job_execution_timeout_seconds: 300
@@ -13,11 +13,11 @@ bigquery_chess:
     prod:
       type: bigquery
       method: service-account
-      keyfile: C:\Users\ZainSiddiqi\Downloads\chessgames-7ea1be9e813b.json
+      keyfile: "{{ env_var('GCP_SERVICE_ACCOUNT_KEYFILE') }}"
       project: chessgames
       dataset: prod
       job_execution_timeout_seconds: 300
       job_retries: 1
       priority: interactive
       threads: 4
-  target: prod
+  target: "{{ env_var('BIGQUERY_DATASET') }}"

@@ -2,6 +2,9 @@ import polars as pl
 import requests
 from polars.exceptions import SchemaError
 from datetime import datetime
+import os
+import base64
+import tempfile
 
 from google.cloud.bigquery import (
     LoadJobConfig,
@@ -275,3 +278,23 @@ create or replace view {bigquery_dataset}.view_monthly_summary as (
     and dim_date.year = if(extract(month from current_date) = 1, extract(year from current_date) - 1, extract(year from current_date))
 )
 """
+
+def store_service_account_key(context):
+    # Retrieve the Base64-encoded key from the environment variable
+    encoded_key = os.getenv("GCP_CREDS")
+    if not encoded_key:
+        context.log.error("GCP_CREDS environment variable is not set.")
+        raise ValueError("GCP_CREDS environment variable is not set.")
+    
+    # Decode the Base64-encoded service account key
+    decoded_key = base64.b64decode(encoded_key)
+
+    # Create a temporary file to store the decoded JSON key
+    with tempfile.NamedTemporaryFile(delete=False, mode='wb', suffix='.json') as temp_file:
+        temp_file.write(decoded_key)
+        temp_file_path = temp_file.name
+    
+    # Log the file path for debugging (can be removed later for security reasons)
+    context.log.info(f"Service account key saved to temporary file: {temp_file_path}")
+    
+    return temp_file_path
