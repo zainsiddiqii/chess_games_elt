@@ -1,4 +1,4 @@
-from dagster import define_asset_job, AssetSelection
+from dagster import define_asset_job, AssetSelection, AssetKey
 from ..partitions import monthly_partition
 
 monthly_el_update_job = define_asset_job(
@@ -9,5 +9,5 @@ monthly_el_update_job = define_asset_job(
 
 monthly_transform_serve_job = define_asset_job(
     name="monthly_transform_serve_job",
-    selection=AssetSelection.assets("chess_dbt_assets") | AssetSelection.groups("serve")
+    selection=AssetSelection.assets(AssetKey("chess_dbt_assets")) | AssetSelection.groups("serve")
 )
