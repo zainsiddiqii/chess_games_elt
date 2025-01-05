@@ -6,7 +6,7 @@ from typing import Optional
 from dagster import ConfigurableResource
 
 
-class GCSAuthResource(ConfigurableResource):
+class GCSCustomResource(ConfigurableResource):
     """
     A Dagster resource that wraps around the google.cloud.storage.Client class,
     adding support for credential management during instantiation.
