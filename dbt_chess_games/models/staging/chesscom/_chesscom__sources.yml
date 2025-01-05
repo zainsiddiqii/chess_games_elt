@@ -1,9 +1,8 @@
 version: 2
 
 sources:
-  - name: dagster
+  - name: chesscom
+    database: chessgames
+    schema: "{{ env_var('BIGQUERY_DATASET') }}"
     tables:
-      - name: bigquery_raw_games_chesscom
-        meta:
-          dagster:
-            asset_key: ["bigquery_raw_games_chesscom"]
+      - name: raw_games_chesscom
