@@ -223,7 +223,6 @@ BIGQUERY_TABLE_JOB_CONFIG = LoadJobConfig(
 )
 
 bigquery_view_query = """
-create or replace view {bigquery_dataset}.view_monthly_summary as (
   select
     fct_game.game_sid,
     dim_game.colour,
@@ -252,31 +251,30 @@ create or replace view {bigquery_dataset}.view_monthly_summary as (
     fct_game.my_accuracy,
     fct_game.opponent_accuracy
 
-  from `{bigquery_dataset}.fct_game` as fct_game
+  from `{dataset}.fct_game` as fct_game
 
-  left join `{bigquery_dataset}.dim_game` as dim_game
+  left join `{dataset}.dim_game` as dim_game
     on dim_game.game_sid = fct_game.game_sid
 
-  left join `{bigquery_dataset}.dim_opening` as dim_opening
+  left join `{dataset}.dim_opening` as dim_opening
     on dim_opening.opening_sid = fct_game.opening_sid
 
-  left join `{bigquery_dataset}.dim_opponent` as dim_opponent
+  left join `{dataset}.dim_opponent` as dim_opponent
     on dim_opponent.opponent_sid = fct_game.opponent_sid
 
-  left join `{bigquery_dataset}.dim_result` as dim_result
+  left join `{dataset}.dim_result` as dim_result
     on dim_result.result_sid = fct_game.result_sid
 
-  left join `{bigquery_dataset}.dim_time_control` as dim_time
+  left join `{dataset}.dim_time_control` as dim_time
     on dim_time.time_control_sid = fct_game.time_control_sid
 
-  left join `{bigquery_dataset}.dim_date` as dim_date
+  left join `{dataset}.dim_date` as dim_date
     on dim_date.date_id between dim_game.start_date_actual and dim_game.end_date_actual
 
   where
     dim_game.is_rated = TRUE
-    and dim_date.month = if(extract(month from current_date) = 1, 12, extract(month from current_date) - 1)
-    and dim_date.year = if(extract(month from current_date) = 1, extract(year from current_date) - 1, extract(year from current_date))
-)
+    and dim_date.month = if({month} = 1, 12, {month} - 1)
+    and dim_date.year = if({month} = 1, {year} - 1, {year})
 """
 
 def store_service_account_key(context):
