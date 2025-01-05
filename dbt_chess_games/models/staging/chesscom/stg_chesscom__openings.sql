@@ -7,7 +7,7 @@ openings as (
     opening_name,
     opening_url
 
-  from {{ source("dagster", "bigquery_raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }}
 
   where
     -- 1st letter alphabet, 2nd letter digit

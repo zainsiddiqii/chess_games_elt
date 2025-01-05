@@ -19,7 +19,7 @@ with games as (
     array_length(moves) as total_moves,
     moves
 
-  from {{ source("dagster", "bigquery_raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }}
 
 )
 

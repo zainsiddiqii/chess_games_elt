@@ -16,7 +16,8 @@ class CustomizedDagsterDbtTranslator(DagsterDbtTranslator):
 
 
 @dbt_assets(
-    manifest=chess_games_project.manifest_path
+    manifest=chess_games_project.manifest_path,
+    dagster_dbt_translator=CustomizedDagsterDbtTranslator,
 )
 def chess_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
     service_account_key_path = store_service_account_key(context)

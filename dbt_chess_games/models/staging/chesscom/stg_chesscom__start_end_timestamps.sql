@@ -10,7 +10,7 @@ start_end_timestamps as (
       start_datetime, 'UTC'
     ) as start_timestamp_utc
 
-  from {{ source("dagster", "bigquery_raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }}
 
   where
     safe.timestamp(start_datetime, 'UTC') is not null

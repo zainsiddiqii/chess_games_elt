@@ -20,7 +20,7 @@ move_times_parsed as (
       from unnest(move_times) as move_time
     )                         as move_times
 
-  from {{ source("dagster", "bigquery_raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }}
 )
 
 select * from move_times_parsed

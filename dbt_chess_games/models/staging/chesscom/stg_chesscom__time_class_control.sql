@@ -8,7 +8,7 @@ with time_classes as (
     split(time_control, '+')[safe_offset(0)] as main,
     split(time_control, '+')[safe_offset(1)] as increment
 
-  from {{ source("dagster", "bigquery_raw_games_chesscom") }}
+  from {{ source("chesscom", "raw_games_chesscom") }}
 
   where time_class in ('bullet', 'rapid', 'blitz')
 
