@@ -269,7 +269,7 @@ bigquery_view_query = """
     on dim_time.time_control_sid = fct_game.time_control_sid
 
   left join `{dataset}.dim_date` as dim_date
-    on dim_date.date_id between dim_game.start_date_actual and dim_game.end_date_actual
+    on dim_date.date_id = dim_game.start_date_actual
 
   where
     dim_game.is_rated = TRUE
