@@ -41,10 +41,13 @@ The project is structured as follows:
 Since everything is orchestrated in Dagster, the pipeline is as organised into asset_groups as follows:
 
 1. extract_load
+   
    This asset group extract the data from the chesscom API, lightly transforms it, and loads it into BigQuery, as well as creating a backup in Google Cloud Storage.
-2. transform
+2. transform (default)
+   
     This asset group transforms the data in BigQuery using dbt.
 3. serve
+   
     This asset group creates a view in BigQuery that feeds into Looker Studio.
 
 ### Dashboard
