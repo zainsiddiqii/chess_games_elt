@@ -7,5 +7,5 @@ datetime_start,datetime_end,tzdb_timezone,is_current
 2021-09-18 00:00:00,2022-08-15 23:59:59,Europe/London,FALSE
 2023-06-22 00:00:00,2023-12-05 23:59:59,Europe/London,FALSE
 2024-02-06 00:00:00,2024-11-07 23:59:59,Europe/London,FALSE
-2024-11-08 00:00:00,2025-01-28 23:59:59,Asia/Karachi,TRUE
+2024-11-08 00:00:00,2025-01-28 23:59:59,Asia/Karachi,FALSE
 2025-01-29 00:00:00,2025-04-30 23:59:59,Europe/London,TRUE
