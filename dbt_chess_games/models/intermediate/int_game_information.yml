@@ -7,6 +7,7 @@ models:
       - name: game_id
         description: unique game id provided by the platform.
         data_tests:
+          - unique
           - not_null
       - name: game_url
         description: unique url for accessing the game details on the website of the relevant source
