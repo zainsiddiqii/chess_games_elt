@@ -33,6 +33,8 @@ def bigquery_view_monthly_summary(bigquery: BigQueryResource):
     view.mview_query = formatted_query
 
     with bigquery.get_client() as client:
-        # Make an API request to create the materialized view.
+        # Base tables fully refresh so delete materialised view and recreate it
+        
+        client.delete_table(view_id)
         view = client.create_table(view, exists_ok=True)
         print(f"Created {view.table_type}: {str(view.reference)}")
